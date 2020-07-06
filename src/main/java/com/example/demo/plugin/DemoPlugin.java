@@ -31,9 +31,17 @@ public class DemoPlugin extends CQPlugin {
         long userId = event.getUserId();
         String msg = event.getMessage();
 
-        if (msg.equals("hi")) {
+        if (msg.equals("功能")||msg.equals("菜单")||msg.equals("列表")||msg.equals("帮助")||msg.equals("help")||msg.equals("menu")) {
             // 调用API发送hello
-            cq.sendPrivateMsg(userId, "hello", false);
+            cq.sendPrivateMsg(userId, "功能列表\n" +
+                    "百科 梁非凡\n" +
+                    "病理 头痛\n" +
+                    "无损音乐 龙的传人\n" +
+                    "翻译 dog\n" +
+                    "养鲲游戏请发送【*菜单】\n" +
+                    "赛马游戏请发送【@机器人+赛马】\n" +
+                    "方舟抽卡请发送【非酋测试】\n" +
+                    "百度云密码查询请直接发送【百度云链接】", false);
 
             // 不执行下一个插件
             return MESSAGE_BLOCK;
@@ -57,9 +65,17 @@ public class DemoPlugin extends CQPlugin {
         long groupId = event.getGroupId();
         long userId = event.getUserId();
 
-        if (msg.equals("hello")) {
+        if (msg.equals("功能")||msg.equals("菜单")||msg.equals("列表")||msg.equals("帮助")||msg.equals("help")||msg.equals("menu")) {
             // 回复内容为 at发送者 + hi
-            String result = CQCode.at(userId) + "hi";
+            String result = "功能列表\n" +
+                    "百科 梁非凡\n" +
+                    "病理 头痛\n" +
+                    "无损音乐 龙的传人\n" +
+                    "翻译 dog\n" +
+                    "养鲲游戏请发送【*菜单】\n" +
+                    "赛马游戏请发送【@机器人+赛马】\n" +
+                    "方舟抽卡请发送【非酋测试】\n" +
+                    "百度云密码查询请直接发送【百度云链接】";
 
             // 调用API发送消息
             cq.sendGroupMsg(groupId, result, false);
