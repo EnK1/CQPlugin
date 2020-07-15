@@ -33,7 +33,8 @@ public class DemoPlugin extends CQPlugin {
 
         if (msg.equals("功能")||msg.equals("菜单")||msg.equals("列表")||msg.equals("帮助")||msg.equals("help")||msg.equals("menu")) {
             // 调用API发送hello
-            cq.sendPrivateMsg(userId, "功能列表\n" +
+            cq.sendPrivateMsg(userId, "功能列表:\n" +
+                    "sh000001 查询股票支持sh，sz\n" +
                     "百科 梁非凡\n" +
                     "病理 头痛\n" +
                     "无损音乐 龙的传人\n" +

@@ -1,24 +1,20 @@
 package com.example.demo.plugin;
 
 import com.example.demo.http.StokHttp;
+import lombok.extern.slf4j.Slf4j;
 import net.lz1998.cq.event.message.CQGroupMessageEvent;
 import net.lz1998.cq.robot.CQPlugin;
 import net.lz1998.cq.robot.CoolQ;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
-
+@Slf4j
 @Component
 public class StockPlugin extends CQPlugin {
 
     @Override
     public int onGroupMessage(CoolQ cq, CQGroupMessageEvent event) {
         String msg = event.getMessage();
+        String msg1 = msg;
         long groupId = event.getGroupId();
 
         if (msg.equals("大盘")){
@@ -33,7 +29,37 @@ public class StockPlugin extends CQPlugin {
             cq.sendGroupMsg(groupId,reply,false);
             return MESSAGE_BLOCK;
         }
+        if (msg.startsWith("sh")||msg.startsWith("sz")){
+            if (msg.length()==8){
+                String[] hqArr = StokHttp.getHqBySina(msg);
+                String reply = null;
+                try {
+                    reply = Reply(hqArr,msg);
+                    cq.sendGroupMsg(groupId,reply,false);
+                } catch (Exception e) {
+                    cq.sendGroupMsg(groupId,"查询的股票代码不存在哦",false);
+                }
+
+                return MESSAGE_BLOCK;
+            }
+        }
         return MESSAGE_IGNORE;
+    }
+
+    public static String Reply(String[] s,String msg){
+        String picLink = "\n日K线： http://image.sinajs.cn/newchart/daily/n/" + msg + ".gif\n" +
+                "分时线： http://image.sinajs.cn/newchart/min/n/"+ msg + ".gif\n" +
+                "周K线： http://image.sinajs.cn/newchart/weekly/n/" + msg + ".gif\n" +
+                "月K线： http://image.sinajs.cn/newchart/monthly/n/" + msg + ".gif\n";
+        String reply = "股票名称：" + s[00] +
+                "\n今日开盘价：" + s[01] +
+                "\n昨日收盘价：" + s[02] +
+                "\n当前价格：" + s[03] +
+                "\n今日最高价：" + s[04] +
+                "\n今日最低价：" + s[05] +
+                picLink +
+                s[30] + "\b-\b" + s[31];
+        return reply;
     }
 
 
