@@ -29,7 +29,7 @@ public class StockPlugin extends CQPlugin {
             cq.sendGroupMsg(groupId, reply, false);
             return MESSAGE_BLOCK;
         }
-        if (msg.startsWith("sh") || msg.startsWith("sz")|| msg.startsWith("SZ")|| msg.startsWith("SH")) {
+        if (msg.startsWith("sh") || msg.startsWith("sz")) {
             msg1 = msg1.substring(2);
             if (msg.length() == 8) {
                 try {
