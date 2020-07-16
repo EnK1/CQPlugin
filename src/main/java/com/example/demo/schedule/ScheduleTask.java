@@ -11,12 +11,13 @@ import org.springframework.stereotype.Component;
 public class ScheduleTask {
     @Scheduled(cron = "0 30 9,10,11 * * 1,2,3,4,5",zone = "Asia/Shanghai")
     public void Morning(){
-        log.info("123");
+        log.info("定时任务上证指数");
         String reply = Reply();
         CQGlobal.robots.get(3487542722L).sendGroupMsg(912790863,reply,false);
     }
     @Scheduled(cron = "0 0 13,14,15 * * 1,2,3,4,5",zone = "Asia/Shanghai")
     public void Afternoon(){
+        log.info("定时任务上证指数");
         String reply = Reply();
         CQGlobal.robots.get(3487542722L).sendGroupMsg(912790863,reply,false);
     }
@@ -27,9 +28,9 @@ public class ScheduleTask {
         float current = Float.parseFloat(hqArr[03]);
         float amplitude = (current - start)/start*100;
 
-//        String reply =  hqArr[00] + "：" + hqArr[03] +"%f.2%"+
-//                "\n\n" + hqArr[30] + "\b-\b" + hqArr[31];
-        String reply =String.format("%s：%s %f.2%\n %s - %s ",hqArr[00],hqArr[03],amplitude,hqArr[30],hqArr[31]);
+        String reply =  hqArr[00] + "：" + hqArr[03] + " " + amplitude + "%" +
+                "\n\n" + hqArr[30] + " - " + hqArr[31];
+//        String reply =String.format("%s：%s %f.2%\n %s - %s ",hqArr[00],hqArr[03],amplitude,hqArr[30],hqArr[31]);
         return reply;
     }
 }
