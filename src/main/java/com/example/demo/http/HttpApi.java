@@ -1,5 +1,7 @@
 package com.example.demo.http;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,7 +9,8 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class StokHttp {
+@Slf4j
+public class HttpApi {
     /**
      * @param id 股票id 上交所"sh"开头 深交所"sz"开头
      * @return
@@ -45,6 +48,29 @@ public class StokHttp {
      * [31]15:06:09			时间
      * [32]00
      */
+
+
+    /**
+     * [00]CHEUNG KONG      股票名称
+     * [01]长和              股票名称
+     * [02]50.600           今日开盘价
+     * [03]50.850           昨日收盘价
+     * [04]51.200           今日最高价
+     * [05]50.500           今日最低价
+     * [06]50.850           当前价格
+     * [07]0.000
+     * [08]0.000
+     * [09]50.750
+     * [10]50.800
+     * [11]119061907
+     * [12]2342015
+     * [13]38.348
+     * [14]0.000
+     * [15]76.900
+     * [16]45.050
+     * [17]2020/07/22       日期
+     * [18]11:09            时间
+     * */
     public static String[] getHqBySina(String id) {
         String hqResult = getHqResultBySina(id);
         String[] temp = hqResult.split("var hq_str_" + id + "=\"");
@@ -65,6 +91,11 @@ public class StokHttp {
         return httpRequestUtils("http://hq.sinajs.cn/list=" + id);
     }
 
+    public static String getHqResultByCute(String msg){
+        log.info(msg);
+        return httpRequestUtils("https://api.sc2h.cn/api/maid.php?data=0&sign=user&msg=" + msg);
+    }
+
     public static String httpRequestUtils(String url) {
         PrintWriter out = null;
         BufferedReader in = null;
@@ -75,7 +106,9 @@ public class StokHttp {
             URLConnection conn = reqUrl.openConnection();
 
             //设置请求头
-            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+            if (!url.startsWith("https")){
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+            }
             //          conn.setRequestProperty("Connection", "Keep-Alive");//保持长连接
             conn.setDoOutput(true); //设置为true才可以使用conn.getOutputStream().write()
             conn.setDoInput(true); //才可以使用conn.getInputStream().read();
@@ -88,7 +121,13 @@ public class StokHttp {
             out.flush();
 
             // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "GBK"));
+            if (!url.startsWith("https")){
+                in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "GBK"));
+                log.info("Stock:" + url);
+            }else {
+                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                log.info("Cute:" + url);
+            }
             String line;
             while ((line = in.readLine()) != null) {
                 result.append(line);
@@ -107,6 +146,8 @@ public class StokHttp {
                 ex.printStackTrace();
             }
         }
+        log.info(result.toString());
+
         return result.toString();
     }
 }

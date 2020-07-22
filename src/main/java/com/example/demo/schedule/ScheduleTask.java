@@ -1,6 +1,6 @@
 package com.example.demo.schedule;
 
-import com.example.demo.http.StokHttp;
+import com.example.demo.http.HttpApi;
 import lombok.extern.slf4j.Slf4j;
 import net.lz1998.cq.CQGlobal;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,12 +23,16 @@ public class ScheduleTask {
     }
 
     public static String Reply(){
-        String[] hqArr = StokHttp.getHqBySina("sh000001");
+        String[] hqArr = HttpApi.getHqBySina("sh000001");
         float start = Float.parseFloat(hqArr[02]);
         float current = Float.parseFloat(hqArr[03]);
         float amplitude = (current - start)/start*100;
+        String str = String.valueOf(amplitude);
+        int index = str.indexOf(".");
+        str = str.substring(0,index + 3);
 
-        String reply =  hqArr[00] + "：" + hqArr[03] + " " + amplitude + "%" +
+
+        String reply =  hqArr[00] + "：" + hqArr[03] + " " + str + "%" +
                 "\n\n" + hqArr[30] + " - " + hqArr[31];
 //        String reply =String.format("%s：%s %f.2%\n %s - %s ",hqArr[00],hqArr[03],amplitude,hqArr[30],hqArr[31]);
         return reply;
