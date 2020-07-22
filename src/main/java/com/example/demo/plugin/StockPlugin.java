@@ -21,9 +21,9 @@ public class StockPlugin extends CQPlugin {
             String[] hqArr = HttpApi.getHqBySina("sh000001");
             String str = Str(hqArr);
             String reply = "股票名称：" + hqArr[00] + " " + str + "%"+
+                    "\n当前价格：" + hqArr[03] +
                     "\n今日开盘价：" + hqArr[01] +
                     "\n昨日收盘价：" + hqArr[02] +
-                    "\n当前价格：" + hqArr[03] +
                     "\n今日最高价：" + hqArr[04] +
                     "\n今日最低价：" + hqArr[05] +
                     "\n\n" + hqArr[30] + "\b-\b" + hqArr[31];
@@ -42,11 +42,13 @@ public class StockPlugin extends CQPlugin {
                             reply = Reply(hqArr, msg);
                             cq.sendGroupMsg(groupId, reply, false);
                         } catch (Exception e) {
+                            e.printStackTrace();
                             cq.sendGroupMsg(groupId, "查询的股票代码不存在哦", false);
                         }
 
                     }
                 } catch (NumberFormatException e) {
+                    e.printStackTrace();
                     cq.sendGroupMsg(groupId, "请不要输入奇怪的东西", false);
                 }
             }
@@ -62,21 +64,42 @@ public class StockPlugin extends CQPlugin {
                         try {
                             String[] hqArr = HttpApi.getHqBySina(msg);
                             String reply = null;
-                            reply = HkReply(hqArr);
+                            reply = HKReply(hqArr);
                             cq.sendGroupMsg(groupId, reply, false);
                         } catch (Exception e) {
-                            log.info(e.toString());
+                            e.printStackTrace();
                             cq.sendGroupMsg(groupId, "查询的股票代码不存在哦", false);
                         }
 
                     }
                 } catch (NumberFormatException e) {
+                    e.printStackTrace();
                     cq.sendGroupMsg(groupId, "请不要输入奇怪的东西", false);
                 }
             }
 
             return MESSAGE_BLOCK;
         }
+        if(msg.startsWith("us")){
+            msg = msg.substring(2);
+            String id = "gb_" + msg;
+            try {
+                String[] HqArr = HttpApi.getHqBySina(id);
+                if(HqArr.length == 0){
+                    cq.sendGroupMsg(groupId, "查询的股票代码不存在哦", false);
+                    return MESSAGE_BLOCK;
+                }
+                String reply = null;
+                reply = USReply(HqArr);
+                cq.sendGroupMsg(groupId, reply, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+                cq.sendGroupMsg(groupId, "查询的股票代码不存在哦", false);
+                return MESSAGE_BLOCK;
+            }
+            return MESSAGE_BLOCK;
+        }
+
 
 
         return MESSAGE_IGNORE;
@@ -89,9 +112,9 @@ public class StockPlugin extends CQPlugin {
                 "月K线： http://image.sinajs.cn/newchart/monthly/n/" + msg + ".gif\n";
         String str = Str(s);
         String reply = "股票名称：" + s[00] + " " + str + "%"+
+                "\n当前价格：" + s[03] +
                 "\n今日开盘价：" + s[01] +
                 "\n昨日收盘价：" + s[02] +
-                "\n当前价格：" + s[03] +
                 "\n今日最高价：" + s[04] +
                 "\n今日最低价：" + s[05] +
                 picLink +
@@ -99,30 +122,52 @@ public class StockPlugin extends CQPlugin {
         return reply;
     }
 
-    public static String HkReply(String[] s){
+    public static String HKReply(String[] s){
         float start = Float.parseFloat(s[03]);
         float current = Float.parseFloat(s[06]);
-        float amplitude = (current - start)/start*100;
-        String str = String.valueOf(amplitude);
-        int index = str.indexOf(".");
-        str = str.substring(0,index + 3);
+        String str = null;
+        if (start == current){
+            str = "0";
+        }else{
+            float amplitude = (current - start)/start*100;
+            str = String.valueOf(amplitude);
+            int index = str.indexOf(".");
+            str = str.substring(0,index + 3);
+        }
+
         String reply = "股票名称：" + s[01] + " " + str + "%"+
+                "\n当前价格：" + s[06] +
                 "\n今日开盘价：" + s[02] +
                 "\n昨日收盘价：" + s[03] +
-                "\n当前价格：" + s[06] +
                 "\n今日最高价：" + s[04] +
                 "\n今日最低价：" + s[05] +
                 "\n" + s[17] + "-" + s[18];
         return reply;
     }
 
+    public static String USReply(String[] hqArr){
+        String relpy = "股票名称：" + hqArr[00] +" " + hqArr[02] + "%"+
+                "\n当前价格" + hqArr[01] +
+                "\n今日开盘价：" + hqArr[05] +
+                "\n昨日收盘价：" + hqArr[25] +
+                "\n今日最高价：" + hqArr[06] +
+                "\n今日最低价：" + hqArr[07] +
+                "\n" + hqArr[03];
+        return relpy;
+    }
+
     public static String Str (String[] hqArr){
         float start = Float.parseFloat(hqArr[02]);
         float current = Float.parseFloat(hqArr[03]);
-        float amplitude = (current - start)/start*100;
-        String str = String.valueOf(amplitude);
-        int index = str.indexOf(".");
-        str = str.substring(0,index + 3);
+        String str = null;
+        if (start == current){
+            str = "0";
+        }else{
+            float amplitude = (current - start)/start*100;
+            str = String.valueOf(amplitude);
+            int index = str.indexOf(".");
+            str = str.substring(0,index + 3);
+        }
         return str;
     }
 
