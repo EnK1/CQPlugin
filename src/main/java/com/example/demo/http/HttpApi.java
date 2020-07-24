@@ -93,15 +93,16 @@ public class HttpApi {
      * [17]0.00
      * [18]0.00
      * [19]3474356510               股本
-     * [20]44.4900                  盘后
-     * [21]0.75                     盘后涨幅百分比
-     * [22]0.33
-     * [23]Jul 21 08:00PM EDT       美国东部时间
-     * [24]Jul 21 04:00PM EDT
-     * [25]42.3800                  前收盘
-     * [26]17694                    成交量
-     * [27]1
-     * [28]2020
+     * [20]0
+     * [21]44.4900                  盘后
+     * [22]0.75                     盘后涨幅百分比
+     * [23]0.33
+     * [24]Jul 21 08:00PM EDT       美国东部时间
+     * [25]Jul 21 04:00PM EDT
+     * [26]42.3800                  前收盘
+     * [27]17694                    成交量
+     * [28]1
+     * [29]2020
      * */
     public static String[] getHqBySina(String id) {
         String hqResult = getHqResultBySina(id);
@@ -138,9 +139,10 @@ public class HttpApi {
             URLConnection conn = reqUrl.openConnection();
 
             //设置请求头
-            if (!url.startsWith("https")){
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-            }
+//            if (!url.startsWith("https")){
+//                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+                conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36");
+//            }
             //          conn.setRequestProperty("Connection", "Keep-Alive");//保持长连接
             conn.setDoOutput(true); //设置为true才可以使用conn.getOutputStream().write()
             conn.setDoInput(true); //才可以使用conn.getInputStream().read();
@@ -158,7 +160,7 @@ public class HttpApi {
                 log.info("Stock:" + url);
             }else {
                 in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                log.info("Cute:" + url);
+                log.info("btc:" + url);
             }
             String line;
             while ((line = in.readLine()) != null) {

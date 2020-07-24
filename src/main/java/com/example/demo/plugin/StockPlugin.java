@@ -149,7 +149,7 @@ public class StockPlugin extends CQPlugin {
         String relpy = "股票名称：" + hqArr[00] +" " + hqArr[02] + "%"+
                 "\n当前价格" + hqArr[01] +
                 "\n今日开盘价：" + hqArr[05] +
-                "\n昨日收盘价：" + hqArr[25] +
+                "\n昨日收盘价：" + hqArr[26] +
                 "\n今日最高价：" + hqArr[06] +
                 "\n今日最低价：" + hqArr[07] +
                 "\n" + hqArr[03];
